@@ -1,8 +1,7 @@
-
 import * as Immutable from 'immutable'
 import { combineReducers } from 'redux';;
 import * as ActionTypes from './actions';
-import { IActionCommon, IBreed } from './model';
+import { IActionCommon, IBreed, isBreedsArray } from './model';
 
 type ImmutableMap = Immutable.Map<string, string | IBreed | IBreed[] | string[] | Immutable.List<string> | boolean>;
 
@@ -52,7 +51,18 @@ function listOfDogs(state: ImmutableMap = defaultListOfDogsState, action: IActio
         case ActionTypes.SHOW_RANDOM_DOG_SUCCESS:
             const imageParts = action.response.message.split('/');
             const breedsPartIndex = imageParts.indexOf('breeds');
-            return stopFetching(state).set('selectedBreed', imageParts[breedsPartIndex + 1]);
+            const stateBreeds = state.get('breeds');
+            const responsedImageBreed = imageParts[breedsPartIndex + 1].indexOf('-') >= 0 ?
+                imageParts[breedsPartIndex + 1].split('-')[0] : 
+                imageParts[breedsPartIndex + 1];
+            let selected: IBreed = { name: '', sub: [], selectedSub: '' };
+            if(isBreedsArray(stateBreeds)) {
+                selected = stateBreeds.filter(x => x.name === responsedImageBreed)[0];
+                if(imageParts[breedsPartIndex + 1].indexOf('-')) {
+                    selected.selectedSub = imageParts[breedsPartIndex + 1].split('-')[1];
+                }
+            }
+            return stopFetching(state).set('selectedBreed', selected);
         default:
             return state;
     }

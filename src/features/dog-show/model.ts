@@ -20,5 +20,10 @@ export function isActionAPI(object: ActionPayload) : object is IActionAPI {
 
 export interface IBreed {
     name: string;
+    selectedSub?: string;
     sub: string[];
+}
+
+export function isBreedsArray(object: any) : object is IBreed[] {
+    return (object.length && object.length > 0);
 }
