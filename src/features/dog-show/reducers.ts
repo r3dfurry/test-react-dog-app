@@ -4,14 +4,17 @@ import { combineReducers } from 'redux';;
 import * as ActionTypes from './actions';
 import { IActionCommon } from './model';
 
-type ImmutableMap = Immutable.Map<string, string | string[] | boolean>;
+type ImmutableMap = Immutable.Map<string, string | string[] | Immutable.List<string> | boolean>;
 
-function specifyDog (state: ImmutableMap = Immutable.Map({ breed: '', isFetching: true }), action: IActionCommon) :  ImmutableMap  {
+const defaultState = Immutable.Map({ breed: '', isFetching: true, images: Immutable.List<string>() });
+
+function specifyDog (state: ImmutableMap = defaultState, action: IActionCommon) :  ImmutableMap  {
     switch(action.type) {
     case ActionTypes.SHOW_SPECIFIC_DOG_REQUEST:
         return state.set('breed', action.breed).set('isFetching', true);
     case ActionTypes.SHOW_SPECIFIC_DOG_SUCCESS:
-        return state.set('isFetching', false);
+        const images = Immutable.List<string>([action.response.message]);
+        return state.set('isFetching', false).set('images', images);
     case ActionTypes.SHOW_SPECIFIC_DOG_FAILURE:
         return state.set('isFetching', false);
     default:

@@ -2,8 +2,18 @@ import * as React from 'react';
 import { loadListOfDogs, loadSpecificDog } from '../actions';
 import { connect } from 'react-redux';
 import { ModeSwitcher } from '../components/mode-switcher';
+import ImageShow from '../components/image-show';
+import * as Immutable from 'immutable';
+
+interface IProps {
+    breeds: Immutable.List<string>;
+    imageLink: string;
+    selectedBreed: string;
+    loadListOfDogs: () => {};
+    loadSpecificDog: (breed: string) => {};
+}
  
-class DisplayModeSwitcher extends React.Component<any, any> {
+class DogViewer extends React.Component<IProps, any> {
     constructor(props: any) {
         super(props);
     }
@@ -18,13 +28,19 @@ class DisplayModeSwitcher extends React.Component<any, any> {
                     selectedBreed={this.props.selectedBreed}
                     showRandomBreedClick={this.props.loadListOfDogs}
                     showSpecificBreedClick={this.props.loadSpecificDog}/>
+                <ImageShow
+                    breed={this.props.selectedBreed}
+                    imageLink={this.props.imageLink} />
             </div>
         )
     }
 }
 const mapStateToProps = (state: any, ownProps: any) => {
+    // tslint:disable-next-line:no-console
+    console.log(state.specifyDog.get('images'));
     return {
         breeds: state.listOfDogs.get('breeds'),
+        imageLink: state.specifyDog.get('images').get(0),
         isFetching: state.listOfDogs.get('isFetching'),
         selectedBreed: state.listOfDogs.get('selectedBreed')
     };
@@ -33,4 +49,4 @@ const mapStateToProps = (state: any, ownProps: any) => {
 export default connect(mapStateToProps, {
     loadListOfDogs,
     loadSpecificDog
-})(DisplayModeSwitcher);
+})(DogViewer);

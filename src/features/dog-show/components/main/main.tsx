@@ -2,7 +2,7 @@
 import * as Immutable from 'immutable';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import DisplayModeSwitcher from '../../containers/display-mode-switcher';
+import DogViewer from '../../containers/DogViewer';
 import './main.css';
 import { loadSpecificDog, loadListOfDogs } from '../../actions';
 
@@ -25,7 +25,7 @@ class App extends React.Component<any, IState> {
   public render () {
     return (
       <Provider store={this.props.store}>
-        <DisplayModeSwitcher />
+        <DogViewer />
       </Provider>
     );
   }
