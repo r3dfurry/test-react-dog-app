@@ -1,16 +1,17 @@
 import * as React from 'react';
-import { loadListOfDogs, loadSpecificDog } from '../actions';
+import { loadListOfDogs, loadSpecificDog, showRandomDog} from '../actions';
 import { connect } from 'react-redux';
 import { ModeSwitcher } from '../components/mode-switcher';
 import ImageShow from '../components/image-show';
-import * as Immutable from 'immutable';
+import { IBreed } from '../model';
 
 interface IProps {
-    breeds: Immutable.List<string>;
+    breeds: IBreed[];
     imageLink: string;
-    selectedBreed: string;
+    selectedBreed: IBreed;
     loadListOfDogs: () => {};
-    loadSpecificDog: (breed: string) => {};
+    loadSpecificDog: (breed: IBreed[]) => {};
+    showRandomDog: () => {};
 }
  
 class DogViewer extends React.Component<IProps, any> {
@@ -26,7 +27,7 @@ class DogViewer extends React.Component<IProps, any> {
                 <ModeSwitcher
                     breeds={this.props.breeds}
                     selectedBreed={this.props.selectedBreed}
-                    showRandomBreedClick={this.props.loadListOfDogs}
+                    showRandomBreedClick={this.props.showRandomDog}
                     showSpecificBreedClick={this.props.loadSpecificDog}/>
                 <ImageShow
                     breed={this.props.selectedBreed}
@@ -48,5 +49,6 @@ const mapStateToProps = (state: any, ownProps: any) => {
 
 export default connect(mapStateToProps, {
     loadListOfDogs,
-    loadSpecificDog
+    loadSpecificDog,
+    showRandomDog
 })(DogViewer);

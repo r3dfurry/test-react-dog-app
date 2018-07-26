@@ -20,5 +20,5 @@ export function isActionAPI(object: ActionPayload) : object is IActionAPI {
 
 export interface IBreed {
     name: string;
-    sub: IBreed[];
+    sub: string[];
 }
