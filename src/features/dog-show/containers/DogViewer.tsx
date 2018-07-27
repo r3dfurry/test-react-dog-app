@@ -15,7 +15,7 @@ interface IProps {
 }
  
 class DogViewer extends React.Component<IProps, any> {
-    constructor(props: any) {
+    constructor(props: IProps) {
         super(props);
     }
     public componentWillMount() {
@@ -37,8 +37,6 @@ class DogViewer extends React.Component<IProps, any> {
     }
 }
 const mapStateToProps = (state: any, ownProps: any) => {
-    // tslint:disable-next-line:no-console
-    console.log(state.specifyDog.get('images'));
     return {
         breeds: state.listOfDogs.get('breeds'),
         imageLink: state.specifyDog.get('images').get(0),

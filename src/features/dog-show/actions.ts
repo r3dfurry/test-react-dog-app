@@ -1,4 +1,4 @@
-import { IActionAPI, IBreed } from './model';
+import { IActionAPI, IBreed, ActionPayload } from './model';
 import { CALL_API } from './middleware.api';
 
 export const ACTION_NOOP = 'ACTION_NOOP';
@@ -19,12 +19,7 @@ export const loadListOfDogs = () => (dispatch: any) => {
 export const SHOW_RANDOM_DOG_REQUEST = 'SHOW_RANDOM_DOG_REQUEST';
 export const SHOW_RANDOM_DOG_SUCCESS = 'SHOW_RANDOM_DOG_SUCCESS';
 export const SHOW_RANDOM_DOG_FAILURE = 'SHOW_RANDOM_DOG_FAILURE';
-const fetchRandomBreed = (): IActionAPI => ({
-    [CALL_API]: {
-        endpoint: 'https://dog.ceo/api/breeds/image/random',
-        types: [SHOW_RANDOM_DOG_REQUEST, SHOW_RANDOM_DOG_SUCCESS, SHOW_RANDOM_DOG_FAILURE]
-    }
-})
+const fetchRandomBreed = (): IActionAPI => apiActionCreator('https://dog.ceo/api/breeds/image/random', SHOW_RANDOM_DOG_REQUEST, SHOW_RANDOM_DOG_SUCCESS, SHOW_RANDOM_DOG_FAILURE);
 export const showRandomDog =() => (dispatch: any) => {
     dispatch(fetchRandomBreed());
 };
@@ -32,22 +27,27 @@ export const showRandomDog =() => (dispatch: any) => {
 export const SHOW_SPECIFIC_DOG_REQUEST = 'SHOW_SPECIFIC_DOG_REQUEST';
 export const SHOW_SPECIFIC_DOG_SUCCESS = 'SHOW_SPECIFIC_DOG_SUCCESS';
 export const SHOW_SPECIFIC_DOG_FAILURE = 'SHOW_SPECIFIC_DOG_FAILURE';
-const fetchSpecificDog = (breeds: IBreed[]) => {
+export const fetchSpecificDog = (breeds: IBreed[]) : ActionPayload => {
         const [fetchedBreed] = breeds;
         if(breeds.length === 0 || fetchedBreed.name === '') {
             return {
                 type: ACTION_NOOP
             }
         }
-        return {
-            [CALL_API]: {
-                endpoint: `https://dog.ceo/api/breed/${fetchedBreed.name}/images/random`,        
-                types: [SHOW_SPECIFIC_DOG_REQUEST, SHOW_SPECIFIC_DOG_SUCCESS, SHOW_SPECIFIC_DOG_FAILURE]
-                
-            },
+        return Object.assign(apiActionCreator(`https://dog.ceo/api/breed/${fetchedBreed.name}/images/random`, SHOW_SPECIFIC_DOG_REQUEST, SHOW_SPECIFIC_DOG_SUCCESS, SHOW_SPECIFIC_DOG_FAILURE), {
             breed: fetchedBreed
-        }
+        });
 };
+
+export function apiActionCreator(endpoint: string, requestAction: string, successAction: string, failureAction: string) {
+    return {
+        [CALL_API]: {
+            endpoint,
+            types: [requestAction, successAction, failureAction]
+        }
+    }
+}
+
 export const loadSpecificDog = (breed: IBreed[]) => (dispatch: any) => {
     dispatch(fetchSpecificDog(breed));
 }

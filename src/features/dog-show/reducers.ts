@@ -1,11 +1,11 @@
 import * as Immutable from 'immutable'
 import { combineReducers } from 'redux';;
 import * as ActionTypes from './actions';
-import { IActionCommon, IBreed, isBreedsArray } from './model';
+import { IActionCommon, IBreed, isBreedsArray, EmptyBreed, ActionPayload } from './model';
 
 type ImmutableMap = Immutable.Map<string, string | IBreed | IBreed[] | string[] | Immutable.List<string> | boolean>;
 
-const defaultSpecifyDogState = Immutable.Map({ breed: { name: '', sub: [] }, isFetching: true, images: Immutable.List<string>() });
+const defaultSpecifyDogState = Immutable.Map({ breed: EmptyBreed, isFetching: true, images: Immutable.List<string>() });
 function specifyDog (state: ImmutableMap = defaultSpecifyDogState, action: IActionCommon) :  ImmutableMap  {
     switch(action.type) {
     case ActionTypes.SHOW_SPECIFIC_DOG_REQUEST:
@@ -27,13 +27,13 @@ function specifyDog (state: ImmutableMap = defaultSpecifyDogState, action: IActi
     }
 }
 
-const defaultListOfDogsState = Immutable.Map({ breeds: [], isFetching: false, selectedBreed: '' });
-function listOfDogs(state: ImmutableMap = defaultListOfDogsState, action: IActionCommon) : ImmutableMap {
+export const defaultListOfDogsState = Immutable.Map({ breeds: [EmptyBreed], isFetching: false, selectedBreed: '' });
+export function listOfDogs(state: ImmutableMap = defaultListOfDogsState, action: ActionPayload) : ImmutableMap {
     switch(action.type) {
         case ActionTypes.LOAD_LIST_OF_DOGS_REQUEST:
             return startFetching(state);
         case ActionTypes.LOAD_LIST_OF_DOGS_SUCCESS:
-            let breeds: IBreed[] = [{name: '', sub: []}];
+            let breeds: IBreed[] = [EmptyBreed];
             for(const responsedBreed in action.response.message) {
                 const breed = {
                     name: responsedBreed,
@@ -47,7 +47,7 @@ function listOfDogs(state: ImmutableMap = defaultListOfDogsState, action: IActio
         case ActionTypes.SHOW_SPECIFIC_DOG_REQUEST:
             return startFetching(state).set('selectedBreed', action.breed);
         case ActionTypes.ACTION_NOOP:
-            return state.set('selectedBreed',  { name: '', sub: []});
+            return state.set('selectedBreed',  EmptyBreed);
         case ActionTypes.SHOW_RANDOM_DOG_SUCCESS:
             const imageParts = action.response.message.split('/');
             const breedsPartIndex = imageParts.indexOf('breeds');
@@ -55,7 +55,8 @@ function listOfDogs(state: ImmutableMap = defaultListOfDogsState, action: IActio
             const responsedImageBreed = imageParts[breedsPartIndex + 1].indexOf('-') >= 0 ?
                 imageParts[breedsPartIndex + 1].split('-')[0] : 
                 imageParts[breedsPartIndex + 1];
-            let selected: IBreed = { name: '', sub: [], selectedSub: '' };
+            let selected: IBreed = EmptyBreed;
+            selected.selectedSub = '';
             if(isBreedsArray(stateBreeds)) {
                 selected = stateBreeds.filter(x => x.name === responsedImageBreed)[0];
                 if(imageParts[breedsPartIndex + 1].indexOf('-')) {
@@ -72,7 +73,6 @@ export default combineReducers({
     listOfDogs,
     specifyDog
 });
-
 
 function stopFetching(state: ImmutableMap) : ImmutableMap {
     return state.set('isFetching', false);
