@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`1 1`] = `
+<div>
+  <div>
+    <div>
+      <button
+        className="ui labeled icon button"
+        onClick={[Function]}
+      >
+        <i
+          className="random icon"
+        />
+        Show random breed
+      </button>
+      <span>
+        or 
+        <br />
+        specify breed
+      </span>
+      <select
+        className="ui dropdown"
+        onChange={[Function]}
+        value={undefined}
+      >
+        <option
+          value=""
+        >
+          
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
+`;
