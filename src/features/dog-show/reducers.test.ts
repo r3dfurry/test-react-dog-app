@@ -1,6 +1,6 @@
 import * as Reducers from './reducers';
 import * as Actions from './actions';
-import { IBreed, isActionAPI, IActionCommon, isBreed } from './model';
+import { IBreed, IActionCommon, isBreed } from './model';
 
 describe(`Reducers - ${Actions.SHOW_RANDOM_DOG_SUCCESS} action`, () => {
 
@@ -49,4 +49,27 @@ describe(`Reducers - ${Actions.SHOW_RANDOM_DOG_SUCCESS} action`, () => {
     }
 });
 
-// describe(`Reduces - ${Actions.LOAD_LIST_OF_DOGS_SUCCESS} actiom`, () => {});
+describe(`Reduces - ${Actions.LOAD_LIST_OF_DOGS_SUCCESS} actiom`, () => {
+    const sampleActionWithResponse = {
+        response: {
+            message: {
+                "affenpinscher": [],
+                "african": [],
+                "bulldog": [
+                    "boston",
+                    "french"
+                ]
+            }
+        },
+        type: Actions.LOAD_LIST_OF_DOGS_SUCCESS
+    }
+
+    it('Generate first breed empty', () => {
+        const newState = Reducers.listOfDogs(Reducers.defaultListOfDogsState, sampleActionWithResponse);
+        const firstBreed: IBreed = newState.get('breeds')[0];
+        expect(firstBreed.name === '' &&
+            Array.isArray(firstBreed.sub) &&
+            firstBreed.sub.length === 0 &&
+            !!firstBreed.selectedSub === false).toBeTruthy();
+    });
+});
