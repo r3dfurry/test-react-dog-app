@@ -12,8 +12,7 @@ const callApi = (endpoint: any) => {
 }
 
 export default (store: any) => (next: any) => (action: ActionPayload) => {
-    const isActionCallAPI = isActionAPI(action);
-    if(!isActionCallAPI) {
+    if(!isActionAPI(action)) {
         return next(action);
     }
     const callAPI = action[CALL_API];
