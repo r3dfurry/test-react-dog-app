@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ModeSwitcher } from '../components/mode-switcher';
 import ImageShow from '../components/image-show';
 import { IBreed } from '../model';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 interface IProps extends RouteComponentProps<any, any> {
     breeds: IBreed[];
@@ -21,20 +21,29 @@ class DogViewer extends React.Component<IProps, any> {
         super(props);
     }
     public componentDidMount() {
-        this.props.loadListOfDogs(this.props.match.params.breed);
-        this.props.loadSpecificDog([{ name: this.props.match.params.breed, sub: []}]);
+        const { props } = this;
+        const { breed } = props.match.params;
+        props.loadListOfDogs(breed);
+        props.loadSpecificDog([{ name: breed, sub: []}]);
     }
+
+
     public render() {
+        const { breeds, selectedBreed, imageLink } = this.props;
         return (
             <div>
                 <ModeSwitcher
-                    breeds={this.props.breeds}
-                    selectedBreed={this.props.selectedBreed}
+                    breeds={breeds}
+                    selectedBreed={selectedBreed}
                     showRandomBreedClick={this.props.showRandomDog}
-                    showSpecificBreedClick={this.props.loadSpecificDog}/>
+                    showSpecificBreedClick={(breed: IBreed[]) => {
+                        const [specificBreed] = breed;
+                        history.pushState(null, undefined, `/dogs/${specificBreed.name}`);
+                        this.props.loadSpecificDog(breed);
+                    }}/>
                 <ImageShow
-                    breed={this.props.selectedBreed}
-                    imageLink={this.props.imageLink} />
+                    breed={selectedBreed}
+                    imageLink={imageLink} />
             </div>
         )
     }
@@ -48,8 +57,8 @@ const mapStateToProps = (state: any, ownProps: any) => {
     };
 }
 
-export default connect(mapStateToProps, {
+export default withRouter(connect(mapStateToProps, {
     loadListOfDogs,
     loadSpecificDog,
     showRandomDog
-})(DogViewer);
+})(DogViewer));

@@ -6,18 +6,18 @@ import configureStore from './features/dog-show/store';
 import './index.css';
 import 'semantic-ui/dist/semantic.min.css';
 import registerServiceWorker from './registerServiceWorker';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'; 
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'; 
 import { Provider } from 'react-redux';
 
 const store = configureStore();
 
 render(
-  <Router>
-    
+  <Router>    
       <Provider store={store}>
         <Switch>
           <Route path="/dogs/:breed" component={Dogs} />
           <Route path="/dogs" component={Dogs} />
+          <Redirect exact={true} from="/" to="/dogs" />
           <Route Path="*">
             <NotFound />      
           </Route>
