@@ -6,14 +6,15 @@ export const ACTION_NOOP = 'ACTION_NOOP';
 export const LOAD_LIST_OF_DOGS_REQUEST = 'LOAD_LIST_OF_DOGS_REQUEST';
 export const LOAD_LIST_OF_DOGS_SUCCESS = 'LOAD_LIST_OF_DOGS_SUCCESS';
 export const LOAD_LIST_OF_DOGS_FAILURE = 'LOAD_LIST_OF_DOGS_FAILURE';
-const fetchListOfDogs = (): IActionAPI => ({
+const fetchListOfDogs = (breed?: IBreed): IActionAPI => ({
     [CALL_API]: {        
         endpoint: 'https://dog.ceo/api/breeds/list/all',
         types: [LOAD_LIST_OF_DOGS_REQUEST, LOAD_LIST_OF_DOGS_SUCCESS, LOAD_LIST_OF_DOGS_FAILURE]
-    }
+    },
+    selectedBreed: breed
 });
-export const loadListOfDogs = () => (dispatch: any) => {
-    dispatch(fetchListOfDogs());
+export const loadListOfDogs = (breed?: IBreed) => (dispatch: any) => {
+    dispatch(fetchListOfDogs(breed));
 };
 
 export const SHOW_RANDOM_DOG_REQUEST = 'SHOW_RANDOM_DOG_REQUEST';

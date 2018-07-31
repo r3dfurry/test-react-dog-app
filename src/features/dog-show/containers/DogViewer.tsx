@@ -4,22 +4,25 @@ import { connect } from 'react-redux';
 import { ModeSwitcher } from '../components/mode-switcher';
 import ImageShow from '../components/image-show';
 import { IBreed } from '../model';
+import { RouteComponentProps } from 'react-router-dom';
 
-interface IProps {
+interface IProps extends RouteComponentProps<any, any> {
     breeds: IBreed[];
     imageLink: string;
     selectedBreed: IBreed;
-    loadListOfDogs: () => {};
+    loadListOfDogs: (breed?: IBreed) => {};
     loadSpecificDog: (breed: IBreed[]) => {};
     showRandomDog: () => {};
+    trySpecifyBreed: (breed: string) => {};
 }
  
 class DogViewer extends React.Component<IProps, any> {
     constructor(props: IProps) {
         super(props);
     }
-    public componentWillMount() {
-        this.props.loadListOfDogs();
+    public componentDidMount() {
+        this.props.loadListOfDogs(this.props.match.params.breed);
+        this.props.loadSpecificDog([{ name: this.props.match.params.breed, sub: []}]);
     }
     public render() {
         return (

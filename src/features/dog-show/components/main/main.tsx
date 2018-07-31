@@ -22,6 +22,7 @@ class App extends React.Component<any, IState> {
   }
 
   public render () {
+    debugger
     return (
       <Provider store={this.props.store}>
         <DogViewer />

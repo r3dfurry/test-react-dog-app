@@ -27,7 +27,7 @@ function specifyDog (state: ImmutableMap = defaultSpecifyDogState, action: IActi
     }
 }
 
-export const defaultListOfDogsState = Immutable.Map({ breeds: [EmptyBreed], isFetching: false, selectedBreed: '' });
+export const defaultListOfDogsState = Immutable.Map({ breeds: [EmptyBreed], isFetching: false, selectedBreed: EmptyBreed });
 export function listOfDogs(state: ImmutableMap = defaultListOfDogsState, action: ActionPayload) : ImmutableMap {
     switch(action.type) {
         case ActionTypes.LOAD_LIST_OF_DOGS_REQUEST:
@@ -41,7 +41,16 @@ export function listOfDogs(state: ImmutableMap = defaultListOfDogsState, action:
                 };
                 breeds.push(breed);
             }
-            return stopFetching(state).set('breeds', breeds)
+            let trySelectedBreed;
+            if (action.selectedBreed) {
+                const selectedBreedInArray = breeds.filter(b => b.name === action.selectedBreed);
+                if(selectedBreedInArray && selectedBreedInArray.length > 0) {
+                    trySelectedBreed = selectedBreedInArray[0];
+                }
+            }
+            const newState = stopFetching(state).set('breeds', breeds)
+                .set('selectedBreed', !!trySelectedBreed ? trySelectedBreed : '');
+            return newState;
         case ActionTypes.LOAD_LIST_OF_DOGS_FAILURE:
             return stopFetching(state);        
         case ActionTypes.SHOW_SPECIFIC_DOG_REQUEST:
