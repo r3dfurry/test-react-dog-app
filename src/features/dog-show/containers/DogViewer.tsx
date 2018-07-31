@@ -13,7 +13,6 @@ interface IProps extends RouteComponentProps<any, any> {
     loadListOfDogs: (breed?: IBreed) => {};
     loadSpecificDog: (breed: IBreed[]) => {};
     showRandomDog: () => {};
-    trySpecifyBreed: (breed: string) => {};
 }
  
 class DogViewer extends React.Component<IProps, any> {
