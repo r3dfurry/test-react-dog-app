@@ -41,16 +41,7 @@ export function listOfDogs(state: ImmutableMap = defaultListOfDogsState, action:
                 };
                 breeds.push(breed);
             }
-            let trySelectedBreed;
-            if (action.selectedBreed) {
-                const selectedBreedInArray = breeds.filter(b => b.name === action.selectedBreed);
-                if(selectedBreedInArray && selectedBreedInArray.length > 0) {
-                    trySelectedBreed = selectedBreedInArray[0];
-                }
-            }
-            const newState = stopFetching(state).set('breeds', breeds)
-                .set('selectedBreed', !!trySelectedBreed ? trySelectedBreed : '');
-            return newState;
+            return stopFetching(state).set('breeds', breeds);
         case ActionTypes.LOAD_LIST_OF_DOGS_FAILURE:
             return stopFetching(state);        
         case ActionTypes.SHOW_SPECIFIC_DOG_REQUEST:

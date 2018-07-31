@@ -1,4 +1,4 @@
-import { IActionAPI, IBreed, ActionPayload } from './model';
+import { IActionAPI, IBreed, ActionPayload, EmptyBreed } from './model';
 import { CALL_API } from './middleware.api';
 
 export const ACTION_NOOP = 'ACTION_NOOP';
@@ -6,15 +6,26 @@ export const ACTION_NOOP = 'ACTION_NOOP';
 export const LOAD_LIST_OF_DOGS_REQUEST = 'LOAD_LIST_OF_DOGS_REQUEST';
 export const LOAD_LIST_OF_DOGS_SUCCESS = 'LOAD_LIST_OF_DOGS_SUCCESS';
 export const LOAD_LIST_OF_DOGS_FAILURE = 'LOAD_LIST_OF_DOGS_FAILURE';
-const fetchListOfDogs = (breed?: IBreed): IActionAPI => ({
+const fetchListOfDogs = (breed?: string, dispatch?: any): IActionAPI => ({
     [CALL_API]: {        
         endpoint: 'https://dog.ceo/api/breeds/list/all',
-        types: [LOAD_LIST_OF_DOGS_REQUEST, LOAD_LIST_OF_DOGS_SUCCESS, LOAD_LIST_OF_DOGS_FAILURE]
-    },
-    selectedBreed: breed
+        types: [LOAD_LIST_OF_DOGS_REQUEST, breed ? {            
+            callback: fetchSpecificBreedIfExistInResponse.bind(null, breed, dispatch),
+            name: LOAD_LIST_OF_DOGS_SUCCESS
+        } : LOAD_LIST_OF_DOGS_SUCCESS, LOAD_LIST_OF_DOGS_FAILURE]
+    }
 });
-export const loadListOfDogs = (breed?: IBreed) => (dispatch: any) => {
-    dispatch(fetchListOfDogs(breed));
+
+const fetchSpecificBreedIfExistInResponse = (breed: string, dispatch: any, response: any) => {
+    if(response.message.hasOwnProperty(breed)) {
+        dispatch(fetchSpecificDog([Object.assign({}, EmptyBreed, {
+            name: breed
+        })]));
+    }
+}
+
+export const loadListOfDogs = (breed?: string) => (dispatch: any) => {
+    dispatch(fetchListOfDogs(breed, dispatch));
 };
 
 export const SHOW_RANDOM_DOG_REQUEST = 'SHOW_RANDOM_DOG_REQUEST';

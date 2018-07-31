@@ -10,7 +10,7 @@ interface IProps extends RouteComponentProps<any, any> {
     breeds: IBreed[];
     imageLink: string;
     selectedBreed: IBreed;
-    loadListOfDogs: (breed?: IBreed) => {};
+    loadListOfDogs: (breed?: string) => {};
     loadSpecificDog: (breed: IBreed[]) => {};
     showRandomDog: () => {};
 }
@@ -23,7 +23,6 @@ class DogViewer extends React.Component<IProps, any> {
         const { props } = this;
         const { breed } = props.match.params;
         props.loadListOfDogs(breed);
-        props.loadSpecificDog([{ name: breed, sub: []}]);
     }
 
 

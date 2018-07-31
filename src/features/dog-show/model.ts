@@ -7,10 +7,19 @@ export interface IActionCommon {
 
 export interface IActionAPI {
     [CALL_API]: {
-        types: string[],
+        types: Array<string | IActionTypeWithCallBack>,
         endpoint: string,
     },
     [key: string]: any;
+}
+
+export interface IActionTypeWithCallBack {
+    name: string;
+    callback: (response: any) => (dispatch: any)  => {}
+}
+
+export function isIActionTypeWithCallBack(object: any) : object is IActionTypeWithCallBack {
+    return !!object.name && (typeof object.callback === 'function');
 }
 
 export type ActionPayload = IActionCommon | IActionAPI;

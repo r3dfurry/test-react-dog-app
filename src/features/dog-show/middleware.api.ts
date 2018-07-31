@@ -1,4 +1,4 @@
-import { ActionPayload, isActionAPI } from './model';
+import { ActionPayload, isActionAPI, isIActionTypeWithCallBack } from './model';
 
 export const CALL_API = 'Call API';
 const callApi = (endpoint: any) => {
@@ -25,10 +25,15 @@ export default (store: any) => (next: any) => (action: ActionPayload) => {
     const { endpoint } = callAPI;
     next(actionWith({ type: requestType }));
     return callApi(endpoint).then(
-            response => next(actionWith({
-                response,
-                type: successType
-            })),
+            response => {
+                next(actionWith({
+                    response,
+                    type: isIActionTypeWithCallBack(successType) ? successType.name : successType
+                }));
+                if (isIActionTypeWithCallBack(successType)) {
+                    successType.callback(response);    
+                }
+            },
             error => next(actionWith({
                 error: error.message || 'Error occured.',
                 type: failureType
