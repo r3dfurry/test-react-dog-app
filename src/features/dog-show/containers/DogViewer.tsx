@@ -34,11 +34,7 @@ class DogViewer extends React.Component<IProps, any> {
                     breeds={breeds}
                     selectedBreed={selectedBreed}
                     showRandomBreedClick={this.props.showRandomDog}
-                    showSpecificBreedClick={(breed: IBreed[]) => {
-                        const [specificBreed] = breed;
-                        history.pushState(null, undefined, `/dogs/${specificBreed.name}`);
-                        this.props.loadSpecificDog(breed);
-                    }}/>
+                    showSpecificBreedClick={this.props.loadSpecificDog}/>
                 <ImageShow
                     breed={selectedBreed}
                     imageLink={imageLink} />
@@ -47,11 +43,17 @@ class DogViewer extends React.Component<IProps, any> {
     }
 }
 const mapStateToProps = (state: any, ownProps: any) => {
+    const stateBreed = state.listOfDogs.get('selectedBreed');
+    if(!!history.state === false || history.state.name !== stateBreed.name) {
+        history.pushState({
+            name: stateBreed.name
+        }, undefined, `/dogs/${stateBreed.name}`);
+    }
     return {
         breeds: state.listOfDogs.get('breeds'),
         imageLink: state.specifyDog.get('images').get(0),
         isFetching: state.listOfDogs.get('isFetching'),
-        selectedBreed: state.listOfDogs.get('selectedBreed')
+        selectedBreed: stateBreed
     };
 }
 
